@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="glean-artifact-type" content="web_design">
+  <meta name="theme-color" content="#0b1f33">
+  <title>NCM Self-Service</title>
+  <style>
+    :root {
+      --artifact-ink: #f4f8fc;
+      --artifact-muted: #b8c8d9;
+      --artifact-navy: #0b1f33;
+      --artifact-navy-deep: #071521;
+      --artifact-blue: #2f7cf6;
+      --artifact-cyan: #55d4f4;
+      --artifact-teal: #89e1d0;
+      --artifact-line: rgba(197, 222, 244, 0.20);
+      --artifact-glow: rgba(47, 124, 246, 0.32);
+      --artifact-surface: rgba(255, 255, 255, 0.08);
+      --artifact-surface-strong: rgba(255, 255, 255, 0.13);
+      --artifact-shadow: 0 24px 70px rgba(0, 0, 0, 0.30);
+    }
+
+    html[data-theme='light'] {
+      --artifact-ink: #f4f8fc;
+      --artifact-muted: #b8c8d9;
+      --artifact-navy: #0b1f33;
+      --artifact-navy-deep: #071521;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      color: var(--artifact-ink);
+      background: var(--artifact-navy-deep);
+      font-family: "Nutanix Sans", "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .page {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      isolation: isolate;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 77% 21%, var(--artifact-glow), transparent 24rem),
+        linear-gradient(135deg, var(--artifact-navy-deep) 0%, var(--artifact-navy) 55%, #0c2a49 100%);
+    }
+
+    .page::before,
+    .page::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      border: 1px solid var(--artifact-line);
+      border-radius: 999px;
+      transform: rotate(-24deg);
+      pointer-events: none;
+    }
+
+    .page::before {
+      width: 48rem;
+      height: 19rem;
+      right: -12rem;
+      bottom: 6rem;
+      box-shadow: 0 0 0 1.25rem rgba(85, 212, 244, 0.04), 0 0 0 2.5rem rgba(85, 212, 244, 0.025);
+    }
+
+    .page::after {
+      width: 33rem;
+      height: 13rem;
+      left: -16rem;
+      top: 10rem;
+      border-color: rgba(137, 225, 208, 0.18);
+    }
+
+    .shell {
+      width: min(1100px, calc(100% - 48px));
+      min-height: min(700px, calc(100vh - 48px));
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px 0 28px;
+    }
+
+    .brandbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      animation: rise-in 700ms ease-out both;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--artifact-ink);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .brand-mark {
+      width: 24px;
+      height: 24px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .brand-mark::before,
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      border: 3px solid var(--artifact-cyan);
+      border-radius: 50%;
+      transform: rotate(30deg);
+    }
+
+    .brand-mark::before { inset: 2px 8px 2px 0; }
+    .brand-mark::after { inset: 2px 0 2px 8px; border-color: var(--artifact-blue); }
+
+    .eyebrow {
+      margin: 0;
+      color: var(--artifact-teal);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      max-width: 770px;
+      padding: 82px 0 74px;
+      animation: rise-in 800ms 100ms ease-out both;
+    }
+
+    h1 {
+      max-width: 760px;
+      margin: 18px 0 22px;
+      font-size: clamp(3.4rem, 8vw, 7.4rem);
+      line-height: 0.93;
+      letter-spacing: -0.075em;
+      font-weight: 700;
+    }
+
+    h1 span {
+      color: var(--artifact-cyan);
+    }
+
+    .lede {
+      max-width: 590px;
+      margin: 0;
+      color: var(--artifact-muted);
+      font-size: clamp(1.05rem, 1.8vw, 1.28rem);
+      line-height: 1.6;
+    }
+
+    .signal {
+      width: min(100%, 560px);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 36px;
+      padding: 16px 18px;
+      border: 1px solid var(--artifact-line);
+      border-radius: 14px;
+      background: var(--artifact-surface);
+      box-shadow: var(--artifact-shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .signal-dot {
+      flex: 0 0 auto;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--artifact-teal);
+      box-shadow: 0 0 0 6px rgba(137, 225, 208, 0.13), 0 0 24px rgba(137, 225, 208, 0.65);
+    }
+
+    .signal p {
+      margin: 0;
+      color: var(--artifact-ink);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .signal strong { font-weight: 700; }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--artifact-line);
+      animation: rise-in 800ms 220ms ease-out both;
+    }
+
+    .footer-note {
+      margin: 0;
+      color: var(--artifact-muted);
+      font-size: 12px;
+      letter-spacing: 0.01em;
+    }
+
+    .footer-words {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: end;
+    }
+
+    .footer-words span {
+      padding: 8px 11px;
+      border: 1px solid var(--artifact-line);
+      border-radius: 999px;
+      color: var(--artifact-muted);
+      background: var(--artifact-surface);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    @keyframes rise-in {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 650px) {
+      .shell { width: min(100% - 32px, 1100px); padding-top: 22px; }
+      .hero { padding: 86px 0 64px; }
+      .brandbar { align-items: flex-start; }
+      .eyebrow { text-align: right; }
+      .footer { align-items: flex-start; flex-direction: column; }
+      .footer-words { justify-content: start; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
+
+    @media print {
+      @page { size: auto !important; }
+      body { margin: 0; padding: 0.4in 0.6in; background: #0b1f33; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .page { min-height: auto; }
+      .shell { width: 100%; min-height: auto; }
+      .brandbar, .hero, .footer { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page" data-glean-id="ncm-self-service-page">
+    <div class="shell" data-glean-id="ncm-self-service-shell">
+      <header class="brandbar" data-glean-id="brandbar">
+        <div class="brand" data-glean-id="brand-lockup">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>Nutanix</span>
+        </div>
+        <p class="eyebrow" data-glean-id="product-eyebrow">NCM Self-Service</p>
+      </header>
+
+      <section class="hero" data-glean-id="hero">
+        <p class="eyebrow" data-glean-id="hero-eyebrow">A little less waiting. A lot more doing.</p>
+        <h1 data-glean-id="hero-title">Let your ideas<br><span>take flight.</span></h1>
+        <p class="lede" data-glean-id="hero-lede">With NCM Self-Service, the cloud is not a maze—it is a launchpad. Choose a blueprint, fill in a few friendly details, and send your next workload gently into orbit.</p>
+        <div class="signal" data-glean-id="hero-signal">
+          <span class="signal-dot" aria-hidden="true"></span>
+          <p><strong>Blueprints ready.</strong> The infrastructure team has already taught the clouds a few helpful tricks.</p>
+        </div>
+      </section>
+
+      <footer class="footer" data-glean-id="footer">
+        <p class="footer-note" data-glean-id="footer-note">Provision thoughtfully. Automate cheerfully.</p>
+        <div class="footer-words" data-glean-id="footer-tags" aria-label="NCM Self-Service capabilities">
+          <span>Blueprints</span><span>Forms</span><span>Automation</span>
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <script>
+    window.GleanBridge.postMessage({
+      actionId: 'export-pdf',
+      type: 'glean-add-menu',
+      metadata: { label: 'Export as PDF', icon: 'export' }
+    });
+    window.GleanBridge.onMessage('action', function(data) {
+      if (data.actionId === 'export-pdf') window.print();
+    });
+  </script>
+</body>
+</html>
